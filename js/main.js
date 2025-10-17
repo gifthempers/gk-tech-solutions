@@ -2,7 +2,7 @@
 
 class RegistrationSystem {
   constructor() {
-    this.apiBase = 'http://localhost:5000/api';
+    this.apiBase = 'https://gk-backend-fnz6.onrender.com/api';
     this.init();
   }
 
