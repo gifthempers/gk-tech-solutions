@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"> -->
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -274,6 +274,14 @@
       </div>
     </div>
   </div>
+  <script>
+  tailwind.config = {
+    theme: {
+      extend: {},
+    },
+  };
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
     function logout() {
       sessionStorage.removeItem("isAdmin");
