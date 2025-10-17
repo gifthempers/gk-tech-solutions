@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - BVB Registration</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+   <script>
+    // Check if logged in
+    if (sessionStorage.getItem("isAdmin") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 font-roboto">
+  <!-- Header -->
+  <header class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <img src="images/logo.png" alt="BVB Logo" class="h-10 w-10" onerror="this.style.display='none'">
+          <div>
+            <h1 class="text-xl font-bold text-gray-800">Admin Panel</h1>
+            <p class="text-sm text-gray-600">BVB Y2K Registration Management</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="exportBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            <i class="bi bi-download mr-2"></i>Export Excel
+          </button>
+          <a href="/" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <i class="bi bi-house mr-2"></i>Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center">
+          <div class="p-2 rounded-full bg-blue-100">
+            <i class="bi bi-people text-blue-600 text-xl"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Total Registrations</p>
+            <p class="text-2xl font-bold text-gray-900" id="totalCount">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center">
+          <div class="p-2 rounded-full bg-green-100">
+            <i class="bi bi-check-circle text-green-600 text-xl"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Validated</p>
+            <p class="text-2xl font-bold text-gray-900" id="verifiedCount">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center">
+          <div class="p-2 rounded-full bg-yellow-100">
+            <i class="bi bi-clock text-yellow-600 text-xl"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Pending</p>
+            <p class="text-2xl font-bold text-gray-900" id="pendingCount">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center">
+          <div class="p-2 rounded-full bg-purple-100">
+            <i class="bi bi-calendar text-purple-600 text-xl"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Today</p>
+            <p class="text-2xl font-bold text-gray-900" id="todayCount">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual Registration Button -->
+    <div class="mb-6">
+      <button id="showManualForm" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+        <i class="bi bi-plus-lg mr-2"></i>Create Manual Registration
+      </button>
+    </div>
+
+    <!-- Manual Registration Form (Hidden by default) -->
+    <div id="manualRegistrationForm" class="hidden bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-6">Manual Registration</h3>
+      
+      <form id="manualForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="manualFullName" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+          <input type="text" id="manualFullName" name="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+        </div>
+
+        <div>
+          <label for="manualEmail" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input type="email" id="manualEmail" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+        </div>
+
+        <div>
+          <label for="manualContact" class="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+          <input type="tel" id="manualContact" name="contactNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+        </div>
+
+        <div>
+          <label for="manualDepartment" class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+          <select id="manualDepartment" name="department" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+            <option value="">Select Department</option>
+             <option value="cse">Electronics and Communication</option>
+              <option value="ece">Electrical Engineering</option>
+              <option value="mech">Civil</option>
+              <option value="civil">Machanical</option>
+              <option value="eee">Industrial Production</option>
+              <option value="it">Computer Science</option>
+              <option value="chemical">Architecture</option>
+              <option value="other">Instrumentation Engineering</option>
+                    </select>
+        </div>
+
+        <div>
+          <label for="manualKen" class="block text-sm font-medium text-gray-700 mb-2">KEN</label>
+          <input type="text" id="manualKen" name="ken" maxlength="7" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+        </div>
+
+        <div>
+          <label for="manualFood" class="block text-sm font-medium text-gray-700 mb-2">Food Preference</label>
+          <select id="manualFood" name="foodPreference" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+            <option value="">Select Preference</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="non-vegetarian">Non-Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="jain">Jain</option>
+            <option value="special">Special Dietary Requirements</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="manualRegType" class="block text-sm font-medium text-gray-700 mb-2">Registration Type</label>
+          <select id="manualRegType" name="registrationType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+            <option value="">Select Type</option>
+            <option value="single">Single Entry</option>
+            <option value="family">Family</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="manualAccommodation" class="block text-sm font-medium text-gray-700 mb-2">Accommodation</label>
+          <select id="manualAccommodation" name="accommodation" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" required>
+            <option value="">Select Option</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+            Create Registration
+          </button>
+          <button type="button" id="cancelManual" class="ml-4 bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+          <input type="text" id="searchInput" placeholder="Search by name, email, or registration number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label for="departmentFilter" class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+          <select id="departmentFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="">Departments</option>
+              <option value="cse">Electronics and Communication</option>
+              <option value="ece">Electrical Engineering</option>
+              <option value="mech">Civil</option>
+              <option value="civil">Machanical</option>
+              <option value="eee">Industrial Production</option>
+              <option value="it">Computer Science</option>
+              <option value="chemical">Architecture</option>
+              <option value="other">Instrumentation Engineering</option>
+                 
+          </select>
+        </div>
+        <div>
+          <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+          <select id="statusFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="">All Status</option>
+            <option value="verified">Verified</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registrations Table -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">All Registrations</h3>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration #</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KEN</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verified #</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+            </tr>
+          </thead>
+          <tbody id="registrationsTableBody" class="bg-white divide-y divide-gray-200">
+            <!-- Table rows will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Loading Spinner -->
+  <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+    <div class="bg-white rounded-lg p-6">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+      <p class="mt-4 text-gray-600">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-8 transform transition-all">
+      <div class="text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+          <i class="bi bi-check-lg text-green-600 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-4" id="modalTitle">Success!</h3>
+        <div id="modalContent" class="text-sm text-gray-500 space-y-2 mb-6"></div>
+        <button id="closeModal" class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+<script>
+    function logout() {
+      sessionStorage.removeItem("isAdmin");
+      window.location.href = "login.html";
+    }
+  </script>
+  <!-- Scripts -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
